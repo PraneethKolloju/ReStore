@@ -1,16 +1,39 @@
 using API.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data
 {
     public static class Dbinitializer
     {
-        public static void Initialize(StoreContext context)
+        public static async Task Initialize(StoreContext context, UserManager<User> userManager)
         {
-            if(context.Products.Any()) return;
 
-            var products=new List<Product>
+            if (!userManager.Users.Any())
             {
-                		new Product
+                var user = new User
+                {
+                    UserName = "Praneeth",
+                    Email = "praneeth@test.com"
+                };
+
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+                var admin = new User
+                {
+                    UserName = "admin",
+                    Email = "admin@test.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, new[] { "Admin", "Member" });
+            }
+
+            if (context.Products.Any()) return;
+
+            var products = new List<Product>
+            {
+                        new Product
                 {
                     Name = "Angular Speedster Board 2000",
                     Description =
@@ -208,13 +231,13 @@ namespace API.Data
                 },
             };
 
-            foreach(var product in products)
+            foreach (var product in products)
             {
-                context.Products.Add(product); 
+                context.Products.Add(product);
             }
 
             context.SaveChanges();
-    
+
         }
     }
 }

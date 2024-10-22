@@ -1,0 +1,14 @@
+.app {
+    color: red;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans text-base;
+        /* Use Tailwind's font-sans utility or your custom font */
+    }
+}
